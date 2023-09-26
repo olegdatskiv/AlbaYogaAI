@@ -86,7 +86,7 @@ if st.session_state.playing:
         st.session_state.playing = False
 
     # Capture from camera
-    camera = cv2.VideoCapture(0)
+    camera = cv2.VideoCapture(1)
     for i in range(300):  # 10 seconds at 30fps
         ret, frame = camera.read()
         if not ret:
