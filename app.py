@@ -10,7 +10,8 @@ from streamlit_webrtc import webrtc_streamer, VideoTransformerBase, RTCConfigura
 video_path = "video/instructor1.mp4"
 frame_placeholder = st.empty()
 
-@st.cache(allow_output_mutation=True)
+
+@st.cache_resource
 def load_model():
     # MediaPipe pose estimation initialization
     mp_pose = mp.solutions.pose
