@@ -8,13 +8,18 @@ from streamlit_webrtc import webrtc_streamer, VideoTransformerBase, RTCConfigura
 
 # Load pre-prepared video
 video_path = "video/instructor1.mp4"
-cap_video = cv2.VideoCapture(video_path)
 frame_placeholder = st.empty()
 
-# MediaPipe pose estimation initialization
-mp_pose = mp.solutions.pose
-mp_drawing = mp.solutions.drawing_utils
-pose = mp_pose.Pose()
+@st.cache(allow_output_mutation=True)
+def load_model():
+    # MediaPipe pose estimation initialization
+    mp_pose = mp.solutions.pose
+    mp_drawing = mp.solutions.drawing_utils
+    pose = mp_pose.Pose()
+    return pose, mp_drawing
+
+
+pose, mp_drawing = load_model()
 
 
 def get_landmarks(frame):
@@ -82,6 +87,7 @@ RTC_CONFIGURATION = RTCConfiguration(
 class VideoProcessor(VideoTransformerBase):
     def __init__(self):
         self.start_time = time.time()  # Set the timestamp when the instance is created
+        self.cap_video = cv2.VideoCapture(video_path)
 
     def transform(self, frame):
         # Convert frame to grayscale
@@ -93,7 +99,7 @@ class VideoProcessor(VideoTransformerBase):
             return img
 
         # Use your previous code here to process the `img` and return the result
-        ret_video, frame_video = cap_video.read()
+        ret_video, frame_video = self.cap_video.read()
 
         if not ret_video:
             return img
@@ -106,6 +112,9 @@ class VideoProcessor(VideoTransformerBase):
             img = visualize_frames(img, frame_video, pose_landmarks1, pose_landmarks2, similarity)
 
         return img
+
+    def on_ended(self):
+        self.cap_video.release()
 
 
 webrtc_streamer(key="live", video_processor_factory=VideoProcessor, rtc_configuration=RTC_CONFIGURATION,
