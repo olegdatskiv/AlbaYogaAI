@@ -17,10 +17,10 @@ def load_model():
     mp_pose = mp.solutions.pose
     mp_drawing = mp.solutions.drawing_utils
     pose = mp_pose.Pose()
-    return pose, mp_drawing
+    return pose, mp_drawing, mp_pose
 
 
-pose, mp_drawing = load_model()
+pose, mp_drawing, mp_pose = load_model()
 
 
 def get_landmarks(frame):
