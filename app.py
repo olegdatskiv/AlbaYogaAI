@@ -94,6 +94,9 @@ class VideoProcessor(VideoTransformerBase):
         # Convert frame to grayscale
         img = frame.to_ndarray(format="bgr24")
 
+        # Flip the frame horizontally
+        img = cv2.flip(img, 1)
+
         elapsed_time = time.time() - self.start_time
 
         if elapsed_time < 10:  # 120 seconds = 2 minutes
